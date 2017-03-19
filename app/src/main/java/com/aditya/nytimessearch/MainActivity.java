@@ -3,6 +3,7 @@ package com.aditya.nytimessearch;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -13,26 +14,27 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.aditya.nytimessearch.fragments.FilterDialogFragment;
+import com.aditya.nytimessearch.listeners.EndlessRecyclerViewScrollListener;
 import com.aditya.nytimessearch.models.Filter;
-import com.aditya.nytimessearch.models.NewsArticleCollection;
+import com.aditya.nytimessearch.models.NewsArticle;
 import com.aditya.nytimessearch.net.RetrofitClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
+import java.util.List;
 
 import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
-import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @BindView(R.id.rvNewsArticles) RecyclerView newsArticleRecyclerView;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.relative_layout) RelativeLayout relativeLayout;
 
+    EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     ArticleAdapter articleAdapter;
     String searchQuery;
     Filter filter;
@@ -41,8 +43,7 @@ public class MainActivity extends AppCompatActivity implements FilterDialogFragm
     @Override
     public void onSave(Filter filter) {
         this.filter = filter;
-        articleAdapter.clearNewsArticleItems();
-        articleAdapter.notifyDataSetChanged();
+        clearData();
         fetchData();
     }
 
@@ -66,6 +67,13 @@ public class MainActivity extends AppCompatActivity implements FilterDialogFragm
         int numCols = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 3;
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(numCols, VERTICAL);
         newsArticleRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                fetchData(page);
+            }
+        };
+        newsArticleRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
     }
 
     @Override
@@ -82,8 +90,9 @@ public class MainActivity extends AppCompatActivity implements FilterDialogFragm
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchQuery = query;
-                fetchData();
+                clearData();
                 searchView.clearFocus();
+                fetchData();
                 return true;
             }
 
@@ -97,9 +106,8 @@ public class MainActivity extends AppCompatActivity implements FilterDialogFragm
         filter.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(MainActivity.this, "Clicked on filter", LENGTH_SHORT).show();
-                FilterDialogFragment filterFragment = new FilterDialogFragment();
-                filterFragment.show(getSupportFragmentManager(), "adad");
+                FilterDialogFragment filterFragment = FilterDialogFragment.newInstance(MainActivity.this.filter);
+                filterFragment.show(getSupportFragmentManager(), "filterDialog");
                 return true;
             }
         });
@@ -119,22 +127,43 @@ public class MainActivity extends AppCompatActivity implements FilterDialogFragm
         return super.onOptionsItemSelected(item);
     }
 
-    private void fetchData() {
-        RetrofitClient.fetchData(searchQuery,
+    private void fetchData(int page) {
+        RetrofitClient.fetchData(this,
+                                 searchQuery,
                                  filter,
-                                 new Callback<NewsArticleCollection>() {
-            @Override
-            public void onResponse(Call<NewsArticleCollection> call, Response<NewsArticleCollection> response) {
-                Log.e("amodi", response.body() + "");
-                articleAdapter.addNewsArticleItems(response.body().getArticles());
-                articleAdapter.notifyDataSetChanged();
-            }
+                                 page,
+                                 new RetrofitClient.NewsArticleCollectionCallback() {
+             @Override
+             public void onSuccess(List<NewsArticle> newsArticleList) {
+                 articleAdapter.addNewsArticleItems(newsArticleList);
+                 articleAdapter.notifyDataSetChanged();
+             }
 
-            @Override
-            public void onFailure(Call<NewsArticleCollection> call, Throwable t) {
-                //Toast.makeText(context, "Error getting data", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Error getting data", t);
-            }
+             @Override
+             public void onLimitExceeded() {
+                 Snackbar.make(relativeLayout, R.string.limit_exceeded, Snackbar.LENGTH_SHORT).show();
+             }
+
+             @Override
+             public void onFailure(Throwable t) {
+                 Log.e(TAG, "Error while fetching data from from the server", t);
+                 Snackbar.make(relativeLayout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
+             }
+
+             @Override
+             public void noInternetConnectivity() {
+                 Snackbar.make(relativeLayout, R.string.no_internet, Snackbar.LENGTH_LONG).show();
+             }
         });
+    }
+
+    private void fetchData() {
+        fetchData(0);
+    }
+
+    private void clearData() {
+        articleAdapter.clearNewsArticleItems();
+        articleAdapter.notifyDataSetChanged();
+        endlessRecyclerViewScrollListener.resetState();
     }
 }

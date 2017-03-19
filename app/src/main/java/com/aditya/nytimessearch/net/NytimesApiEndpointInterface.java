@@ -15,5 +15,6 @@ public interface NytimesApiEndpointInterface {
     Call<NewsArticleCollection> findNews(@Query("q") String query,
                                          @Query("begin_date") String beginDate,
                                          @Query("sort") String sort,
-                                         @Query("fq") String newsDesk);
+                                         @Query("fq") String newsDesk,
+                                         @Query("page") Integer page);
 }
