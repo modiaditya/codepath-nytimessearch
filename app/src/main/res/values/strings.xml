@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Ny Times Search</string>
+    <string name="action_search">Search</string>
+    <string name="action_filter">Filter</string>
+    <string name="begin_date">Begin Date</string>
+    <string name="sort_order">Sort Order</string>
+    <string name="news_desk">News Desk</string>
+    <string name="sports">Sports</string>
+    <string name="arts">Arts</string>
+    <string name="fashion_style">Fashion &amp; Style</string>
+    <string name="save">Save</string>
+    <string name="dismiss">Dismiss</string>
+    <string-array name="sort_order_array">
+        <item>Newest</item>
+        <item>Oldest</item>
+    </string-array>
 </resources>

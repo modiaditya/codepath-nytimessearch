@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="image_height">120dp</dimen>
+    <dimen name="image_width">240dp</dimen>
+    <dimen name="dialog_section_margin">8dp</dimen>
+    <dimen name="dialog_margin">24dp</dimen>
+</resources>
