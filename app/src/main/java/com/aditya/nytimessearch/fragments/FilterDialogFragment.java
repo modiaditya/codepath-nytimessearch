@@ -90,8 +90,7 @@ public class FilterDialogFragment extends DialogFragment {
 
         sortOrder.setAdapter(simpleAdapter);
 
-
-        beginDate.setText(getMediumFormatDate(getContext(), Calendar.getInstance().getTime()));
+        initViews();
         beginDate.setOnClickListener(getBeginDateOnClickLister(beginDate, Calendar.getInstance()));
 
         save.setOnClickListener(new View.OnClickListener() {
@@ -120,11 +119,33 @@ public class FilterDialogFragment extends DialogFragment {
         dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getDialog().dismiss();
                 filterDialogListener.onDismiss();
             }
         });
 
 
+    }
+
+    private void initViews() {
+        if (filter != null) {
+            pickedBeginDate = filter.beginDate != null ? filter.beginDate : Calendar.getInstance().getTime();
+            beginDate.setText(getMediumFormatDate(getContext(), pickedBeginDate));
+            if (filter.sortOrder != null) {
+                sortOrder.setSelection(filter.sortOrder.contains("newest") ? 0 : 1); // fix this
+            }
+            if (filter.newsDesks != null && filter.newsDesks.size() > 0) {
+                if (filter.newsDesks.contains(Filter.NewsDeskType.ARTS.value)) {
+                    arts.setChecked(true);
+                }
+                if (filter.newsDesks.contains(Filter.NewsDeskType.FASHION_N_STYLE.value)) {
+                    fashion.setChecked(true);
+                }
+                if (filter.newsDesks.contains(Filter.NewsDeskType.SPORTS.value)) {
+                    sports.setChecked(true);
+                }
+            }
+        }
     }
 
     private View.OnClickListener getBeginDateOnClickLister(final TextView beginDate, final Calendar c) {
