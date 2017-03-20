@@ -113,9 +113,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleI
                 public void onClick(View view) {
                     String webUrl = newsArticleList.get(getAdapterPosition()).getWebUrl();
                     open(webUrl);
-//                    Intent intent = new Intent(context, WebViewActivity.class);
-//                    intent.putExtra(WebViewActivity.WEB_URL_EXTRA, webUrl);
-//                    context.startActivity(intent);
                 }
             });
         }
