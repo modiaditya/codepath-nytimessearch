@@ -80,7 +80,7 @@ public class RetrofitClient {
                     Runnable runnable = new Runnable() {
                         @Override
                         public void run() {
-                            fetchData(context, query, filter, page, newsArticleCollectionCallback, 1);
+                            fetchData(context, query, filter, page, newsArticleCollectionCallback, (retry+1));
                         }
                     };
                     retryAfter3Seconds(runnable);

@@ -35,6 +35,8 @@ dependencies {
     compile 'com.facebook.stetho:stetho-okhttp3:1.4.1' // for OkHttp
     compile 'com.jakewharton:butterknife:8.5.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
+    compile 'com.android.support:customtabs:25.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     testCompile 'junit:junit:4.12'

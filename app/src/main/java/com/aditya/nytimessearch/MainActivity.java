@@ -29,11 +29,14 @@ import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
 
 public class MainActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogListener {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String FILTER_EXTRA = "filter_extra";
+    private static final String SEARCH_QUERY_EXTRA = "search_query_extra";
 
     @BindView(R.id.rvNewsArticles) RecyclerView newsArticleRecyclerView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.relative_layout) RelativeLayout relativeLayout;
 
+    StaggeredGridLayoutManager staggeredGridLayoutManager;
     EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     ArticleAdapter articleAdapter;
     String searchQuery;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements FilterDialogFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setTheme(R.style.SecondaryStyle);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements FilterDialogFragm
         articleAdapter = new ArticleAdapter(this);
         newsArticleRecyclerView.setAdapter(articleAdapter);
         int numCols = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 3;
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(numCols, VERTICAL);
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(numCols, VERTICAL);
         newsArticleRecyclerView.setLayoutManager(staggeredGridLayoutManager);
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
@@ -125,6 +129,32 @@ public class MainActivity extends AppCompatActivity implements FilterDialogFragm
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(FILTER_EXTRA, filter);
+        outState.putString(SEARCH_QUERY_EXTRA, searchQuery);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            filter = savedInstanceState.getParcelable(FILTER_EXTRA);
+            searchQuery = savedInstanceState.getString(SEARCH_QUERY_EXTRA);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (searchQuery != null) {
+            // restoring
+            fetchData();
+        }
+
     }
 
     private void fetchData(int page) {

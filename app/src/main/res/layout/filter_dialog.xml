@@ -27,6 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorGrey"
                 android:text="@string/begin_date">
 
             </TextView>
@@ -66,6 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorGrey"
                 android:text="@string/sort_order">
 
             </TextView>
@@ -83,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginRight="@dimen/dialog_margin"
         android:layout_marginLeft="@dimen/dialog_margin">
 
         <ImageView
@@ -102,6 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorGrey"
                 android:text="@string/news_desk">
 
             </TextView>
@@ -113,6 +117,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorBlack"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:buttonTint="@color/colorBlack"
                 android:text="@string/sports"/>
 
             <CheckBox
@@ -121,6 +126,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorBlack"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:buttonTint="@color/colorBlack"
                 android:text="@string/arts"/>
 
             <CheckBox
@@ -129,6 +135,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorBlack"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:buttonTint="@color/colorBlack"
                 android:text="@string/fashion_style"/>
 
         </LinearLayout>

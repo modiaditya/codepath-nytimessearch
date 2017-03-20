@@ -1,8 +1,14 @@
 package com.aditya.nytimessearch;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -13,9 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.aditya.nytimessearch.activities.WebViewActivity;
 import com.aditya.nytimessearch.models.NewsArticle;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +64,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleI
             holder.thumbnail.setImageResource(0);
             String imageUrl = newsArticle.getImageUrl();
             if (!TextUtils.isEmpty(imageUrl)) {
-                Picasso.with(context).load(imageUrl).placeholder(R.drawable.ic_newspaper).into(holder.thumbnail);
+                Glide.with(context).load(imageUrl).placeholder(R.drawable.ic_newspaper).into(holder.thumbnail);
             }
         }
 
@@ -107,11 +112,34 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleI
                 @Override
                 public void onClick(View view) {
                     String webUrl = newsArticleList.get(getAdapterPosition()).getWebUrl();
-                    Intent intent = new Intent(context, WebViewActivity.class);
-                    intent.putExtra(WebViewActivity.WEB_URL_EXTRA, webUrl);
-                    context.startActivity(intent);
+                    open(webUrl);
+//                    Intent intent = new Intent(context, WebViewActivity.class);
+//                    intent.putExtra(WebViewActivity.WEB_URL_EXTRA, webUrl);
+//                    context.startActivity(intent);
                 }
             });
+        }
+
+        private void open(String url) {
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            builder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            builder.addDefaultShareMenuItem();
+
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, url);
+            int requestCode = 100;
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(context,
+                                                                    requestCode,
+                                                                    intent,
+                                                                    PendingIntent.FLAG_UPDATE_CURRENT);
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_action_share);
+
+            builder.setActionButton(bitmap, context.getString(R.string.action_share), pendingIntent, true);
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(context, Uri.parse(url));
         }
 
 

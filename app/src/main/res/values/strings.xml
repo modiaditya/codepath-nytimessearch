@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">News Search</string>
+    <string name="app_name">Newsy</string>
     <string name="action_search">Search</string>
+    <string name="action_share">Share</string>
     <string name="action_filter">Filter</string>
     <string name="begin_date">Begin Date</string>
     <string name="sort_order">Sort Order</string>
@@ -11,7 +12,7 @@
     <string name="save">Save</string>
     <string name="dismiss">Dismiss</string>
     <string name="limit_exceeded">API Limit exceeded, retrying after 3 seconds</string>
-    <string name="network_error">Error while fetching data from from the server</string>
+    <string name="network_error">Error while fetching data from the server</string>
     <string name="no_internet">No internet connectivity</string>
     <string-array name="sort_order_array">
         <item>Newest</item>
