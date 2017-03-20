@@ -51,6 +51,18 @@ Here's a walkthrough of implemented user stories:
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
+## Screenshots
+
+Attaching screenshots since the gif is a bit blur
+
+<img src='./home.png' title='Home screen with search' width='' alt='Video Walkthrough' />
+
+<img src='./filter.png' title='Filter' width='' alt='Video Walkthrough' />
+
+<img src='./webview.png' title='Chrome custom tab' width='' alt='Video Walkthrough' />
+
+<img src='./landscape.png' title='Landscape view' width='' alt='Video Walkthrough' />
+
 ## Notes
 
 Describe any challenges encountered while building the app.
